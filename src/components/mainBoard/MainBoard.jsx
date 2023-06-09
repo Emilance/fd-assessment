@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { styled } from '@mui/system';
 import { Typography, Box, AppBar, Toolbar, Container, Grid } from '@mui/material';
 import Draggable from 'react-draggable';
-import { Arrow } from 'react-arrows';
+import Xarrow, {useXarrow, Xwrapper} from 'react-xarrows';
 import Terminal from './Terminal';
-import RightSideBar from './rightSIdeBar/RightSIdeBar';
-import AnalyticsOutlinedIcon from '@mui/icons-material/AnalyticsOutlined';
+import RightSideBar from './rightSideBar/RightSideBar';
 import ContentPasteSearchOutlinedIcon from '@mui/icons-material/ContentPasteSearchOutlined';
-
+import { ConnectingAirportsOutlined } from '@mui/icons-material';
+import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined';
 
 const  Icon = styled(ContentPasteSearchOutlinedIcon)({
 
@@ -17,16 +17,50 @@ const  Icon = styled(ContentPasteSearchOutlinedIcon)({
     
     borderRadius: '5px',
   });
+  const LineArrow = styled(ExpandLessOutlinedIcon)({
+
+    width: '1rem',
+    height: '1rem',
+    border:'0.5px solid #969696',
+    color:'#969696',
+    transform:'rotate(90deg)',
+    cursor:'pointer',
+    borderRadius: '5px',
+  });
 
 const MainBoard = () => {
+  const componentRef = useRef(null)
   const [boardItems, setBoardItems] = useState([ ]);
+  const [point, setPoint] = useState({start:null, end:null})
+  const [connection, setConnection] = useState([])
 
+  const updateXarrow = useXarrow();
 
-const [connections, setConnections] = useState([]);
-
-  const handleDragStart = (event, item) => {
-    event.dataTransfer.setData('text/plain', JSON.stringify(item));
+   
+  const setEndPoints = (e, id) => {
+    e.stopPropagation();
+  
+    if (point.start && point.start !== id) {
+      setPoint({ ...point, end: id });
+  
+      const componentNode = componentRef.current;
+      componentNode.style.borderColor = '#c108e6';
+  
+      // Check if the connection already exists
+      const exists = connection.some((conn) => conn.start === point.start && conn.end === id);
+      if (exists) {
+        return;
+      }
+  
+      setConnection([...connection, { start: point.start, end: id }]);
+    } else {
+      setPoint({ ...point, start: id });
+  
+      const componentNode = componentRef.current;
+      componentNode.style.borderColor = '#c108e6';
+    }
   };
+    console.log(connection)
 
   const handleDrop = (event) => {
     event.stopPropagation(); 
@@ -37,18 +71,23 @@ const [connections, setConnections] = useState([]);
     };
     setBoardItems([...boardItems, { ...item, position: newPosition }]);
   };
+  
 
-  const handleDragOver = (event) => {
-    event.preventDefault();
-  };
+   const stopConnection = e =>{
+    document.onmousemove =null,
+    document.onmousedown = null
+   }
 
-  const handleLineConnect = (startId, endId) => {
-    // Connect the elements with a flow line
-    // You can implement your own logic here to store the connections
-    console.log(`Connect ${startId} to ${endId}`);
-    const updatedConnections = [...connections, { startId, endId }];
-     setConnections(updatedConnections);
-  };
+    const removeConnection = (e, item) => {
+      e.stopPropagation();
+    
+      const newConnections = connection.filter((conn) => conn !== item);
+      setConnection(newConnections);
+    
+      document.getElementById(item.start).style.backgroundColor = "#242527";
+      document.getElementById(item.end).style.backgroundColor = "#242527";
+    };
+
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh', width: '100%' }}>
@@ -71,57 +110,51 @@ const [connections, setConnections] = useState([]);
           onDrop={handleDrop}
           onDragOver={(event) => event.preventDefault()}
         >
+            <Xwrapper>
+
           {/* Render board items */}
-          {boardItems.map((item, i) => (
-            <Draggable key={i}  bounds="parent" defaultPosition={item.position} >
-              <div
-                style={{
-                  position: 'absolute',
-                  width: '5.5rem',
-                  height: '5.5rem',
-                  display:'flex',
-                  justifyContent:'center',
-                  alignItems:'center',
-                  flexDirection:"column",
-                  borderRadius:"1rem",
-                  border:"1px solid gray",
-                  backgroundColor: '#242527',
-                  cursor: 'grab',
-                  color:"#969696"
-                }}
-                
-              >
-                <Icon  /> 
-                <Typography variant='body2'>
-                {item.subtitle}
-                    </Typography> 
-              </div>
-            </Draggable>
-          ))}
+                    {boardItems.map((item, i) => (
+                        <Draggable key={i}  bounds="parent" defaultPosition={item.position}  onDrag={updateXarrow} onStop={updateXarrow} >
+                        <div
+                            style={{
+                            position: 'absolute',
+                            width: '5.5rem',
+                            height: '5.5rem',
+                            display:'flex',
+                            justifyContent:'center',
+                            alignItems:'center',
+                            flexDirection:"column",
+                            borderRadius:"1rem",
+                            border:"1px solid gray",
+                            backgroundColor: '#242527',
+                            cursor: 'grab',
+                            color:"#969696"
+                            }}
+                            ref={componentRef}
+                            id={item.id}
+                            onClick={e => setEndPoints(e, item.id)}
+                        >
+                            <Icon  /> 
+                            <Typography variant='body2'>
+                            {item.subtitle}
+                                </Typography> 
+                        </div>
+                        </Draggable>
+                    ))}
+                  
+                   {connection.length && connection.map((item) => {
+                        return(
+                            <Xarrow start={item.start} end={item.end} label={<p  style={{cursor:"pointer"}}
+                             onClick={()=> removeConnection(item)} >x</p>}  color='gray' 
+                             labels={<LineArrow  onClick={(e)=> removeConnection(e,item)}/> } 
+                             showHead={false} strokeWidth={1}/>
+                        )
+                    }) }
+                   
+            </Xwrapper>
 
           {/* Render flow lines */}
-          {boardItems.map((startItem) =>
-            boardItems.map((endItem) => {
-              if (startItem.id !== endItem.id) {
-                // return (
-                //   <Arrow
-                //     key={`${startItem.id}-${endItem.id}`}
-                //     from={{ x: startItem.position.x + 50, y: startItem.position.y + 25 }}
-                //     to={{ x: endItem.position.x, y: endItem.position.y + 25 }}
-                //     onClick={() => handleLineConnect(startItem.id, endItem.id)}
-                //     shaftWidth={4}
-                //     headWidth={12}
-                //     headLength={12}
-                //     fill="white"
-                //     stroke="white"
-                //     strokeWidth={2}
-                //     curveness={0.3}
-                //   />
-                // );
-              }
-              return null;
-            })
-          )}
+         
         </Box>
         <RightSideBar setBoardItems={setBoardItems}  boardItems={boardItems} />
       </Container>

@@ -71,17 +71,17 @@ export const accordionData =[
         id:2,
         details:[
             {
-                id: 1,
+                id: 'key1',
                 subtitle:'Keyword',
                 desc:"keyword to start a workflow, use with or without argument"
             },
             {
-                id: 2,
+                id: "key2",
                 subtitle:'Script filter',
                 desc:"Dynamically populate afred's results your own scripts"
             },
             {
-                id: 3,
+                id: 'key4',
                 subtitle:'Run script',
                 desc:"Run commands in masOS , using various languge & scripts"
             }
@@ -92,17 +92,17 @@ export const accordionData =[
         id:3,
         details:[
             {
-                id: 1,
+                id: 'key5',
                 subtitle:'Keyword',
                 desc:"keyword to start a workflow, use with or without argument"
             },
             {
-                id: 2,
+                id: 'key6',
                 subtitle:'Script filter',
                 desc:"Dynamically populate afred's results your own scripts"
             },
             {
-                id: 3,
+                id: 'key7',
                 subtitle:'Run script',
                 desc:"Run commands in masOS , using various languge & scripts"
             }
@@ -113,27 +113,27 @@ export const accordionData =[
         id:4,
         details:[
             {
-                id: 1,
+                id: 'key8',
                 subtitle:'Keyword',
                 desc:"keyword to start a workflow, use with or without argument"
             },
             {
-                id: 2,
+                id: 'key9',
                 subtitle:'fill filter',
                 desc:"Dynamically populate afred's results your own scripts"
             },
             {
-                id: 3,
+                id: 'key10',
                 subtitle:'Run script',
                 desc:"Run commands in masOS , using various languge & scripts"
             },
           {
-                 id: 4,
+                 id: 'key11',
                 subtitle:'fill filter',
                 desc:"Dynamically populate afred's results your own scripts"
             },
             {
-                id: 5,
+                id: 'key12',
                 subtitle:'Run script',
                 desc:"Run commands in masOS , using various languge & scripts"
             }
@@ -144,17 +144,17 @@ export const accordionData =[
         id:5,
         details:[
             {
-                id: 1,
+                id: 'key11',
                 subtitle:'Keyword',
                 desc:"keyword to start a workflow, use with or without argument"
             },
             {
-                id: 2,
+                id: "key12",
                 subtitle:'Script filter',
                 desc:"Dynamically populate afred's results your own scripts"
             },
             {
-                id: 3,
+                id: "key13",
                 subtitle:'Run script',
                 desc:"Run commands in masOS , using various languge & scripts"
             }
@@ -165,17 +165,17 @@ export const accordionData =[
         id:6,
         details:[
             {
-                id: 1,
+                id: "key14",
                 subtitle:'Keyword',
                 desc:"keyword to start a workflow, use with or without argument"
             },
             {
-                id: 2,
+                id: 'key15',
                 subtitle:'File filter',
                 desc:"Dynamically populate afred's results your own scripts"
             },
             {
-                id: 3,
+                id: "key16",
                 subtitle:'Runing apps',
                 desc:"Run commands in masOS , using various languge & scripts"
             }
